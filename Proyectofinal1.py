@@ -208,7 +208,7 @@ while(5):
             if sumador == 0:
                 toaster.show_toast("Atencion:","Inserte un nombre o numero valido \U0001F620",duration=3)
             while (sumador == 1):
-                    usuario = input("Presione enter para salir, prueba: ")
+                    usuario = input("Presione enter para salir")
                     if usuario == "":
                         sumador = 0
                         salida = False
@@ -229,7 +229,7 @@ while(5):
                         print(c + ":")
                     if len(h) >= 1 and separador == 1:
                         contador += 1
-                        print("     " + str(contador) + "." + " " + h)
+                        print("     " + str(contador) + "." + " " + names[contador-1])
             print("")
             print("---------------------------")
             numero = 0
@@ -272,7 +272,7 @@ while(5):
                         print(c + ":")
                     if len(h) >= 1 and separador == 1:
                         contador += 1
-                        print("     " + str(contador) + "." + " " + h)
+                        print("     " + str(contador) + "." + " " + names[contador-1])
             print("")
             print("---------------------------")
             Vercontacto = input("Llamar contacto: ")
@@ -332,7 +332,7 @@ while(5):
                         print(c + ":")
                     if len(h) >= 1 and separador == 1:
                         contador += 1
-                        print("     " + str(contador) + "." + " " + h)
+                        print("     " + str(contador) + "." + " " + names[contador-1])
             print("")
             print("---------------------------")
             Vercontacto = input("Contacto a enviar: ")
@@ -396,7 +396,7 @@ while(5):
                         print(c + ":")
                     if len(h) >= 1 and separador == 1:
                         contador += 1
-                        print("     " + str(contador) + "." + " " + h)
+                        print("     " + str(contador) + "." + " " + names[contador-1])
             print("")
             print("---------------------------")
             Vercontacto = input("Contacto?: ")
@@ -447,6 +447,129 @@ while(5):
                 if usuario == "":
                     salida = False
                     break
+    def ExportarContactos():
+        contador = 0
+        salida = False
+        sacar = 0
+        listaparacsv = {}
+        listaparacsv['Contactonombre'] = []
+        listaparacsv['telefono'] = []
+        listaparacsv['correo'] = []
+        listaparacsv['Empresa'] = []
+        listaparacsv['extra'] = []
+        for c in letras:
+            for h in letras[c]:
+                if len(h) >= 1:
+                    contador += 1
+        if contador == 0:
+            contador += 1
+            sacar += 1
+        for i in range(contador):
+            if sacar == 1:
+                toaster.show_toast("Atencion:","No hay contactos \U0001F610",duration=3)
+                salida = True
+                break
+            ems = []
+            telefonos = []
+            contar = 0
+            contaremail = 0
+            x = "".join(map(str, letras[names[i][0]][names[i]]['telefono']))
+            em = "".join(map(str, letras[names[i][0]][names[i]]['email']))
+            for y in range(len(x.split("}" + "{"))):
+                contar += 1
+            for y in range(len(em.split("}" + "{"))):
+                contaremail += 1
+            listaparacsv['Contactonombre'].append(names[i])
+            if contar == 1 and contaremail == 1:
+                if type(letras[names[i][0]][names[i]]['telefono'][0]) == set and type(letras[names[i][0]][names[i]]['email'][0]) == set:
+                    for tel in letras[names[i][0]][names[i]]['telefono'][0]:
+                        listaparacsv['telefono'].append(tel)
+                    for tel in letras[names[i][0]][names[i]]['email'][0]:
+                        listaparacsv['correo'].append(tel)
+                    listaparacsv['Empresa'].append(letras[names[i][0]][names[i]]['company'])
+                    listaparacsv['extra'].append(letras[names[i][0]][names[i]]['extra'])
+                else:
+                    listaparacsv['telefono'].append("".join(map(str, letras[names[i][0]][names[i]]['telefono'])))
+                    listaparacsv['correo'].append("".join(map(str, letras[names[i][0]][names[i]]['email'])))
+                    listaparacsv['Empresa'].append(letras[names[i][0]][names[i]]['company'])
+                    listaparacsv['extra'].append(letras[names[i][0]][names[i]]['extra'])
+            if contar == 1 and contaremail > 1:
+                for y in range(contaremail):
+                    for tel in letras[names[i][0]][names[i]]['email'][y]:
+                        ems.append(tel)
+                for tel in letras[names[i][0]][names[i]]['telefono'][0]:
+                        telefonos.append(tel)
+                listaparacsv['telefono'].append("".join(map(str, telefonos)))
+                listaparacsv['correo'].append(", ".join(map(str, ems)))
+                listaparacsv['Empresa'].append(letras[names[i][0]][names[i]]['company'])
+                listaparacsv['extra'].append(letras[names[i][0]][names[i]]['extra'])
+            if contaremail == 1 and contar > 1:
+                for y in range(contar):
+                    for tel in letras[names[i][0]][names[i]]['telefono'][y]:
+                        telefonos.append(tel)
+                for tel in letras[names[i][0]][names[i]]['email'][0]:
+                    ems.append(tel)
+                listaparacsv['correo'].append("".join(map(str, ems)))
+                listaparacsv['telefono'].append(", ".join(map(str, telefonos)))
+                listaparacsv['Empresa'].append(letras[names[i][0]][names[i]]['company'])
+                listaparacsv['extra'].append(letras[names[i][0]][names[i]]['extra'])
+            if contaremail > 1 and contar > 1:
+                for y in range(contaremail):
+                    for tel in letras[names[i][0]][names[i]]['email'][y]:
+                        ems.append(tel)
+                for y in range(contar):
+                    for tel in letras[names[i][0]][names[i]]['telefono'][y]:
+                         telefonos.append(tel)
+                listaparacsv['telefono'].append(", ".join(map(str, telefonos)))
+                listaparacsv['correo'].append(", ".join(map(str, ems)))
+                listaparacsv['Empresa'].append(letras[names[i][0]][names[i]]['company'])
+                listaparacsv['extra'].append(letras[names[i][0]][names[i]]['extra'])
+        while salida == True and sacar == 1:
+            usuario = input("Presione enter para salir: ")
+            if usuario == "":
+                break         
+        salida = True
+        while salida == True and sacar == 0:
+            df = pd.DataFrame(listaparacsv, columns = ['Contactonombre', 'telefono', 'correo', 'Empresa', 'extra'])
+            df.to_csv('contact_manager.csv')
+            toaster.show_toast("Atencion \U0001F604","Archivos CSV creado/modificado exitosamente", duration=3)
+            usuario = input("Presione enter para salir: ")
+            if usuario == "":
+                break
+    if opcion == '1':
+        os.system ("cls")
+        AgregarContactos()
+        os.system ("cls")
+    if opcion == '2':
+        os.system ("cls")
+        BuscarContacto()
+        os.system ("cls")
+    if opcion == '3':
+        os.system ("cls")
+        ListarContacto()
+        os.system ("cls")
+    if opcion == '4':
+        os.system ("cls")
+        BorrarContacto()
+        os.system ("cls")
+    if opcion == '5':
+        os.system ("cls")
+        LlamarContacto()
+        os.system ("cls")
+    if opcion == '6':
+        os.system ("cls")
+        EnviarMensaje()
+        os.system ("cls")
+    if opcion == '7':
+        os.system ("cls")
+        EnviarCorreo()
+        os.system ("cls")
+    if opcion == '8':
+        os.system ("cls")
+        ExportarContactos()
+        os.system ("cls")
+    if opcion == '9':
+        break
 
     
 
