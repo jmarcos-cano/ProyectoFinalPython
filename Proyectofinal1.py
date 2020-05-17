@@ -208,7 +208,7 @@ while(5):
             if sumador == 0:
                 toaster.show_toast("Atencion:","Inserte un nombre o numero valido \U0001F620",duration=3)
             while (sumador == 1):
-                    usuario = input("Presione enter para salir: ")
+                    usuario = input("Presione enter para salir")
                     if usuario == "":
                         sumador = 0
                         salida = False
@@ -229,7 +229,7 @@ while(5):
                         print(c + ":")
                     if len(h) >= 1 and separador == 1:
                         contador += 1
-                        print("     " + str(contador) + "." + " " + h)
+                        print("     " + str(contador) + "." + " " + names[contador-1])
             print("")
             print("---------------------------")
             numero = 0
@@ -272,7 +272,7 @@ while(5):
                         print(c + ":")
                     if len(h) >= 1 and separador == 1:
                         contador += 1
-                        print("     " + str(contador) + "." + " " + h)
+                        print("     " + str(contador) + "." + " " + names[contador-1])
             print("")
             print("---------------------------")
             Vercontacto = input("Llamar contacto: ")
@@ -332,7 +332,7 @@ while(5):
                         print(c + ":")
                     if len(h) >= 1 and separador == 1:
                         contador += 1
-                        print("     " + str(contador) + "." + " " + h)
+                        print("     " + str(contador) + "." + " " + names[contador-1])
             print("")
             print("---------------------------")
             Vercontacto = input("Contacto a enviar: ")
@@ -396,7 +396,7 @@ while(5):
                         print(c + ":")
                     if len(h) >= 1 and separador == 1:
                         contador += 1
-                        print("     " + str(contador) + "." + " " + h)
+                        print("     " + str(contador) + "." + " " + names[contador-1])
             print("")
             print("---------------------------")
             Vercontacto = input("Contacto?: ")
