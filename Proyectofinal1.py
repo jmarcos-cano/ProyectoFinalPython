@@ -213,7 +213,240 @@ while(5):
                         sumador = 0
                         salida = False
                         break
-
+    def BorrarContacto():
+        print("Listar Contacto")
+        salida = True
+        variable = 0
+        while salida == True:
+            contador = 0
+            sacar = 0
+            for c in letras:
+                separador = 0
+                for h in letras[c]:               
+                    if len(h) >= 1 and separador == 0:
+                        print("")
+                        separador += 1
+                        print(c + ":")
+                    if len(h) >= 1 and separador == 1:
+                        contador += 1
+                        print("     " + str(contador) + "." + " " + h)
+            print("")
+            print("---------------------------")
+            numero = 0
+            Vercontacto = input("Borrar contacto: ")
+            if contador == 0:
+                contador += 1
+                sacar += 1
+                variable +=1
+            for i in range(contador):
+                if sacar == 1:
+                    toaster.show_toast("Atencion:","No hay contactos \U0001F610",duration=3)
+                    variable +=1
+                    break
+                if Vercontacto == str(i+1) or Vercontacto == names[i]:
+                    letras[names[i][0]].pop(names[i])
+                    toaster.show_toast("Alerta \U0001F97A", f"Contacto '{names[i]}' borrado \U0001F62D",duration=3)
+                    names.pop(i)
+                    variable += 1
+                    break
+            if variable == 0:
+                toaster.show_toast("Atencion:","Inserte un nombre o numero valido \U0001F620",duration=3)
+            while variable > 0:
+                usuario = input("Presione enter para salir: ")
+                if usuario == "":
+                    salida = False
+                    break
+    def LlamarContacto():
+        print("Listar Contacto")
+        salida = True
+        variable = 0
+        while salida == True:
+            contador = 0
+            sacar = 0
+            for c in letras:
+                separador = 0
+                for h in letras[c]:               
+                    if len(h) >= 1 and separador == 0:
+                        print("")
+                        separador += 1
+                        print(c + ":")
+                    if len(h) >= 1 and separador == 1:
+                        contador += 1
+                        print("     " + str(contador) + "." + " " + h)
+            print("")
+            print("---------------------------")
+            Vercontacto = input("Llamar contacto: ")
+            contar = 0
+            f = 0
+            if contador == 0:
+                contador += 1
+                sacar += 1
+            for i in range(contador):
+                if sacar == 1:
+                    toaster.show_toast("Atencion:","No hay contactos \U0001F610",duration=3)
+                    variable +=1
+                    break
+                numeros = []
+                if Vercontacto == str(i+1) or Vercontacto == names[i]:
+                    x = "".join(map(str, letras[names[i][0]][names[i]]['telefono']))
+                    for y in range(len(x.split("}" + "{"))):
+                        contar += 1
+                    if contar == 1:
+                        toaster.show_toast("Llamando \U0001F4DE",(f"Llamando a {names[i]} al" + " " + "".join(map(str, letras[names[i][0]][names[i]]['telefono']))), duration=3)
+                        variable +=1
+                        break
+                    else:
+                        name = i
+                        print("A cual numero desea llamar?")
+                        for y in range(len(x.split("}" + "{"))):
+                            for tel in letras[names[i][0]][names[i]]['telefono'][y]:
+                                numeros.append(tel)
+                                f += 1
+                                print(str(f) + "." + " " + tel)
+                        numero = input("Numero: ")
+                        for i in range(f):
+                            if numero == str(i+1) or numero == numeros[i]:
+                                toaster.show_toast("Llamando \U0001F4DE",(f"Llamando a {names[name]} al" + " " + numeros[i]), duration=3)
+                                variable +=1
+                                break
+            if variable == 0:
+                toaster.show_toast("Atencion:","Inserte un nombre o numero valido \U0001F620",duration=3)
+            while variable == 1:
+                usuario = input("Presione enter para salir: ")
+                if usuario == "":
+                    salida = False
+                    break
+    def EnviarMensaje():
+        print("Listar Contacto")
+        salida = True
+        variable = 0
+        while salida == True:
+            contador = 0
+            sacar = 0
+            for c in letras:
+                separador = 0
+                for h in letras[c]:               
+                    if len(h) >= 1 and separador == 0:
+                        print("")
+                        separador += 1
+                        print(c + ":")
+                    if len(h) >= 1 and separador == 1:
+                        contador += 1
+                        print("     " + str(contador) + "." + " " + h)
+            print("")
+            print("---------------------------")
+            Vercontacto = input("Contacto a enviar: ")
+            contar = 0
+            f = 0
+            if contador == 0:
+                sacar += 1
+                contador += 1
+            for i in range(contador):
+                if sacar == 1:
+                    toaster.show_toast("Atencion:","No hay contactos \U0001F610",duration=3)
+                    variable +=1
+                    break
+                numeros = []
+                if Vercontacto == str(i+1) or Vercontacto == names[i]:
+                    x = "".join(map(str, letras[names[i][0]][names[i]]['telefono']))
+                    for y in range(len(x.split("}" + "{"))):
+                        contar += 1
+                    if contar == 1:
+                        print("\n")
+                        mensaje = input("Mensaje: ")
+                        print("\n")
+                        toaster.show_toast(f"Hola {names[i]} {x} \U0001F917", f">{mensaje}",duration=3)
+                        variable +=1
+                        break
+                    else:
+                        name = i
+                        print("A cual numero desea enviar el mensaje?")
+                        for y in range(len(x.split("}" + "{"))):
+                            for tel in letras[names[i][0]][names[i]]['telefono'][y]:
+                                numeros.append(tel)
+                                f += 1
+                                print(str(f) + "." + " " + tel)
+                        numero = input("Numero: ")
+                        for i in range(f):
+                            if numero == str(i+1) or numero == numeros[i]:
+                                mensaje = input("Mensaje: ")
+                                toaster.show_toast(f"Hola {names[name]} {numeros[i]} \U0001F917", f">{mensaje}",duration=3)
+                                variable +=1
+                                break
+            if variable == 0:
+                toaster.show_toast("Atencion:","Inserte un nombre o numero valido \U0001F620",duration=3)
+            while variable == 1:
+                usuario = input("Presione enter para salir: ")
+                if usuario == "":
+                    salida = False
+                    break
+    def EnviarCorreo():
+        print("Listar Contacto")
+        salida = True
+        variable = 0
+        while salida == True:
+            contador = 0
+            sacar = 0
+            for c in letras:
+                separador = 0
+                for h in letras[c]:               
+                    if len(h) >= 1 and separador == 0:
+                        print("")
+                        separador += 1
+                        print(c + ":")
+                    if len(h) >= 1 and separador == 1:
+                        contador += 1
+                        print("     " + str(contador) + "." + " " + h)
+            print("")
+            print("---------------------------")
+            Vercontacto = input("Contacto?: ")
+            contar = 0
+            f = 0
+            if contador == 0:
+                contador += 1
+                sacar += 1
+            for i in range(contador):
+                if sacar == 1:
+                    toaster.show_toast("Atencion:","No hay contactos \U0001F610",duration=3)
+                    variable +=1
+                    break
+                numeros = []
+                if Vercontacto == str(i+1) or Vercontacto == names[i]:
+                    x = "".join(map(str, letras[names[i][0]][names[i]]['email']))
+                    for y in range(len(x.split("}" + "{"))):
+                        contar += 1
+                    if contar == 1:
+                        print("\n")
+                        subject = input("Subject: ")
+                        mensaje = input("Mensaje: ")
+                        print("\n")
+                        toaster.show_toast(f"Enviando correo a '{names[i]}' {x} \U0001F644", f">Subject: {subject}\n>Mensaje: {mensaje}",duration=3)
+                        variable +=1
+                        break
+                    else:
+                        name = i
+                        print("A cual email desea enviar el mensaje?")
+                        for y in range(len(x.split("}" + "{"))):
+                            for tel in letras[names[i][0]][names[i]]['email'][y]:
+                                numeros.append(tel)
+                                f += 1
+                                print(str(f) + "." + " " + tel)
+                        numero = input("Correo: ")
+                        print("\n")
+                        for i in range(f):
+                            if numero == str(i+1) or numero == numeros[i]:
+                                subject = input("Subject: ")
+                                mensaje = input("Mensaje: ")
+                                toaster.show_toast(f"Enviando correo a '{names[name]}' {numeros[i]} \U0001F644", f">Subject: {subject}\n>Mensaje: {mensaje}",duration=3)
+                                variable +=1
+                                break
+            if variable == 0:
+                toaster.show_toast("Atencion:","Inserte un nombre o numero valido \U0001F620",duration=3)
+            while variable == 1:
+                usuario = input("Presione enter para salir: ")
+                if usuario == "":
+                    salida = False
+                    break
 
     
 
