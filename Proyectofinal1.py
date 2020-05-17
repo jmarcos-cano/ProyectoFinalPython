@@ -1,19 +1,23 @@
 import json
 import requests
 import validators
+import pandas as pd
+import os
+from win10toast import ToastNotifier
 abecedario = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ"
 letras = {}
 for x in abecedario:
     letras[x] = {}
     names = []
-resp = requests.get('http://demo7130536.mockable.io/contacts')
+resp = requests.get('http://demo7130536.mockable.io/final-contacts-100')
 contactosjson = json.loads(resp.content)
 for k in contactosjson:
     letras[k].update(contactosjson[k])
     for agregarnombres in contactosjson[k]:
             names.append(agregarnombres)
-print("Bienvenido al contactbook.\n1.Agregar contactos\n2.Buscar contactos\n3.Listar contactos\n4.Borrar contactos\n5.Llamar contactos\n6.Enviar mensaje a contactos\n7.Enviar correo a contactos\n8.Exportar contactos\n9.Salir\n")
+toaster = ToastNotifier()
 while(5):
+    print("Bienvenido al contactbook.\n1.Agregar contactos\n2.Buscar contactos\n3.Listar contactos\n4.Borrar contactos\n5.Llamar contactos\n6.Enviar mensaje a contactos\n7.Enviar correo a contactos\n8.Exportar contactos\n9.Salir\n")
     names.sort()
     opcion = input("Elija una opcion: ")
     def AgregarContactos():
@@ -45,7 +49,8 @@ while(5):
         email['email'] = []
         while(3):
             m = input("Introduzca su email: ")
-            if validators.email(m) == True:
+            veremail = m.split('@')
+            if (validators.email(m) == True) and (validators.domain(veremail[1])):
                 email['email'].append({m})
                 em = input("Desea ingresar otro email? (y/n): ")
                 if em == 'n':
@@ -65,57 +70,257 @@ while(5):
         for q in abecedario:
             if q == nombre[0]:
                 letras[q].update(nombres)
+                toaster.show_toast("Contacto Guardado \U0001F601", "Puedes verlo en 'Listar contactos'",duration=3)
         while(11):
             usuario = input('Presione "enter" para salir...')
             if usuario == "":
                 break
     def BuscarContacto():
-        buscador = input("Buscar: ")
-        print("")
-        print("Resultados:")
-        for u in names:
-            if u.find(buscador) != -1:
-                print(u)
-        while(10):
-            usuario2 = input('Presione "enter" para salir...')
-            if usuario2 == "":
-                break
+        salida = True
+        while(salida == True):
+            sumar = 0
+            buscador = input("Buscar: ")
+            print("")
+            print("Resultados:")
+            if names:
+                for u in names:
+                    if u.find(buscador) != -1:
+                        print(u)
+                        sumar += 1
+                if sumar == 0:
+                    toaster.show_toast("Atencion:","Sin resultados \U0001F61E",duration=3)
+            else:
+                toaster.show_toast("Atencion:","No hay contactos \U0001F610",duration=3)
+            while (1):
+                usuario = input("Presione enter para salir: ")
+                if usuario == "":
+                    salida = False
+                    break 
     def ListarContacto():
         print("Listar Contacto")
-        contador = 0
-        for c in letras:
-            separador = 0
-            for h in letras[c]:               
-                if len(h) >= 1 and separador == 0:
-                    print("")
-                    separador += 1
-                    print(c + ":")
-                if len(h) >= 1 and separador == 1:
-                    contador += 1
-                    print("     " + str(contador) + "." + " " + h)
-        print("")
-        print("---------------------------")
-        numero = 0
-        Vercontacto = input("Ver contacto: ")
-        for i in range(contador):
-            if Vercontacto == str(i+1) or Vercontacto == names[i]:
-                print(names[i] + ":")
-                print("     " + "telefono" + ":" + " " + "".join(map(str, letras[names[i][0]][names[i]]['telefono'])))
-                print("     " + "email" + ":" + " " + "".join(map(str, letras[names[i][0]][names[i]]['email'])))
-                print("     " + "company" + ":" + " " + letras[names[i][0]][names[i]]['company'])
-                print("     " + "extra" + ":" + " " + letras[names[i][0]][names[i]]['extra'])
-        while(19):
-            usuario3 = input("Presione enter para salir...")
-            if usuario3 == "":
-                break          
-    if opcion == '1':
-        AgregarContactos()
-    if opcion == '2':
-        BuscarContacto()
-    if opcion == '3':
-        ListarContacto()
+        salida = True
+        while salida == True:
+            contador = 0
+            sacar = 0
+            sumador = 0
+            for c in letras:
+                separador = 0
+                for h in letras[c]:               
+                    if len(h) >= 1 and separador == 0:
+                        print("")
+                        separador += 1
+                        print(c + ":")
+                    if len(h) >= 1 and separador == 1:
+                        contador += 1
+                        print("     " + str(contador) + "." + " " + names[contador-1])
+            print("")
+            print("---------------------------")
+            Vercontacto = input("Ver contacto: ")
+            contar = 0
+            telefonos = []
+            ems = []
+            contaremail = 0
+            if contador == 0:
+                contador += 1
+                sacar += 1
+            for i in range(contador):
+                if sacar == 1:
+                    toaster.show_toast("Atencion:","No hay contactos \U0001F610",duration=3)
+                    sumador +=1
+                    break
+                if Vercontacto == str(i+1) or Vercontacto == names[i]:
+                    x = "".join(map(str, letras[names[i][0]][names[i]]['telefono']))
+                    em = "".join(map(str, letras[names[i][0]][names[i]]['email']))
+                    for y in range(len(x.split("}" + "{"))):
+                        contar += 1
+                    for y in range(len(em.split("}" + "{"))):
+                        contaremail += 1
+                    if contar == 1 and contaremail == 1:
+                        if type(letras[names[i][0]][names[i]]['telefono'][0]) == set and type(letras[names[i][0]][names[i]]['email'][0]) == set:
+                            for tel in letras[names[i][0]][names[i]]['telefono'][0]:
+                                telefonos.append(tel)
+                            for tel in letras[names[i][0]][names[i]]['email'][0]:
+                                ems.append(tel)
+                            print(names[i] + ":")
+                            print("     " + "telefono" + ":" + " " + "".join(map(str, telefonos)))
+                            print("     " + "email" + ":" + " " + "".join(map(str, ems)))
+                            print("     " + "company" + ":" + " " + letras[names[i][0]][names[i]]['company'])
+                            print("     " + "extra" + ":" + " " + letras[names[i][0]][names[i]]['extra'])
+                            sumador +=1
+                            break
+                        else: 
+                            print(names[i] + ":")
+                            print("     " + "telefono" + ":" + " " + "".join(map(str, letras[names[i][0]][names[i]]['telefono'])))
+                            print("     " + "email" + ":" + " " + "".join(map(str, letras[names[i][0]][names[i]]['email'])))
+                            print("     " + "company" + ":" + " " + letras[names[i][0]][names[i]]['company'])
+                            print("     " + "extra" + ":" + " " + letras[names[i][0]][names[i]]['extra'])
+                            sumador +=1
+                            break
+                    else:
+                        if contar == 1:
+                            print(names[i] + ":")
+                            for tel in letras[names[i][0]][names[i]]['telefono'][0]:
+                                print("     " + "telefono" + ":" + " " + tel)
+                            print("     " + "email" + ":" + " ", end="")
+                            for y in range(contaremail):
+                                for tel in letras[names[i][0]][names[i]]['email'][y]:
+                                    ems.append(tel)
+                            print(ems[0], end='')
+                            for m in range(contaremail-1):
+                                print(", ", end='')
+                                print(ems[m+1], end='')
+                            print("\n", end='')
+                            print("     " + "company" + ":" + " " + letras[names[i][0]][names[i]]['company'])
+                            print("     " + "extra" + ":" + " " + letras[names[i][0]][names[i]]['extra'])
+                            sumador +=1
+                            break
+                        print(names[i] + ":")
+                        print("     " + "telefono" + ":" + " ", end="")
+                        for y in range(contar):
+                            for tel in letras[names[i][0]][names[i]]['telefono'][y]:                           
+                                telefonos.append(tel)
+                        print(telefonos[0], end='')
+                        for m in range(contar-1):
+                            print(", ", end='')
+                            print(telefonos[m+1], end='')
+                        print("\n", end='')
+                        if contaremail == 1:
+                            for tel in letras[names[i][0]][names[i]]['email'][0]:
+                                print("     " + "email" + ":" + " " + tel)
+                            print("     " + "company" + ":" + " " + letras[names[i][0]][names[i]]['company'])
+                            print("     " + "extra" + ":" + " " + letras[names[i][0]][names[i]]['extra'])
+                            sumador+=1
+                            break
+                        else:
+                            print("     " + "email" + ":" + " ", end="")
+                            for y in range(contaremail):
+                                for emal in letras[names[i][0]][names[i]]['email'][y]:
+                                    ems.append(emal)
+                            print(ems[0], end='')
+                            for m in range(contaremail-1):
+                                print(", ", end='')
+                                print(ems[m+1], end='')
+                            print("\n", end='')
+                            print("     " + "company" + ":" + " " + letras[names[i][0]][names[i]]['company'])                
+                            print("     " + "extra" + ":" + " " + letras[names[i][0]][names[i]]['extra'])
+                            sumador+=1
+                            break
+            if sumador == 0:
+                toaster.show_toast("Atencion:","Inserte un nombre o numero valido \U0001F620",duration=3)
+            while (sumador == 1):
+                    usuario = input("Presione enter para salir: ")
+                    if usuario == "":
+                        sumador = 0
+                        salida = False
+                        break
+    def BorrarContacto():
+        print("Listar Contacto")
+        salida = True
+        variable = 0
+        while salida == True:
+            contador = 0
+            sacar = 0
+            for c in letras:
+                separador = 0
+                for h in letras[c]:               
+                    if len(h) >= 1 and separador == 0:
+                        print("")
+                        separador += 1
+                        print(c + ":")
+                    if len(h) >= 1 and separador == 1:
+                        contador += 1
+                        print("     " + str(contador) + "." + " " + h)
+            print("")
+            print("---------------------------")
+            numero = 0
+            Vercontacto = input("Borrar contacto: ")
+            if contador == 0:
+                contador += 1
+                sacar += 1
+                variable +=1
+            for i in range(contador):
+                if sacar == 1:
+                    toaster.show_toast("Atencion:","No hay contactos \U0001F610",duration=3)
+                    variable +=1
+                    break
+                if Vercontacto == str(i+1) or Vercontacto == names[i]:
+                    letras[names[i][0]].pop(names[i])
+                    toaster.show_toast("Alerta \U0001F97A", f"Contacto '{names[i]}' borrado \U0001F62D",duration=3)
+                    names.pop(i)
+                    variable += 1
+                    break
+            if variable == 0:
+                toaster.show_toast("Atencion:","Inserte un nombre o numero valido \U0001F620",duration=3)
+            while variable > 0:
+                usuario = input("Presione enter para salir: ")
+                if usuario == "":
+                    salida = False
+                    break
+    def LlamarContacto():
+        print("Listar Contacto")
+        salida = True
+        variable = 0
+        while salida == True:
+            contador = 0
+            sacar = 0
+            for c in letras:
+                separador = 0
+                for h in letras[c]:               
+                    if len(h) >= 1 and separador == 0:
+                        print("")
+                        separador += 1
+                        print(c + ":")
+                    if len(h) >= 1 and separador == 1:
+                        contador += 1
+                        print("     " + str(contador) + "." + " " + h)
+            print("")
+            print("---------------------------")
+            Vercontacto = input("Llamar contacto: ")
+            contar = 0
+            f = 0
+            if contador == 0:
+                contador += 1
+                sacar += 1
+            for i in range(contador):
+                if sacar == 1:
+                    toaster.show_toast("Atencion:","No hay contactos \U0001F610",duration=3)
+                    variable +=1
+                    break
+                numeros = []
+                if Vercontacto == str(i+1) or Vercontacto == names[i]:
+                    x = "".join(map(str, letras[names[i][0]][names[i]]['telefono']))
+                    for y in range(len(x.split("}" + "{"))):
+                        contar += 1
+                    if contar == 1:
+                        toaster.show_toast("Llamando \U0001F4DE",(f"Llamando a {names[i]} al" + " " + "".join(map(str, letras[names[i][0]][names[i]]['telefono']))), duration=3)
+                        variable +=1
+                        break
+                    else:
+                        name = i
+                        print("A cual numero desea llamar?")
+                        for y in range(len(x.split("}" + "{"))):
+                            for tel in letras[names[i][0]][names[i]]['telefono'][y]:
+                                numeros.append(tel)
+                                f += 1
+                                print(str(f) + "." + " " + tel)
+                        numero = input("Numero: ")
+                        for i in range(f):
+                            if numero == str(i+1) or numero == numeros[i]:
+                                toaster.show_toast("Llamando \U0001F4DE",(f"Llamando a {names[name]} al" + " " + numeros[i]), duration=3)
+                                variable +=1
+                                break
+            if variable == 0:
+                toaster.show_toast("Atencion:","Inserte un nombre o numero valido \U0001F620",duration=3)
+            while variable == 1:
+                usuario = input("Presione enter para salir: ")
+                if usuario == "":
+                    salida = False
+                    break
+
+    
 
 
+            
 
     
 
