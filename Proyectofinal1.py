@@ -208,7 +208,7 @@ while(5):
             if sumador == 0:
                 toaster.show_toast("Atencion:","Inserte un nombre o numero valido \U0001F620",duration=3)
             while (sumador == 1):
-                    usuario = input("Presione enter para salir: ")
+                    usuario = input("Presione enter para salir, prueba: ")
                     if usuario == "":
                         sumador = 0
                         salida = False
