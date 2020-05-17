@@ -50,7 +50,7 @@ while(5):
         while(3):
             m = input("Introduzca su email: ")
             veremail = m.split('@')
-            if (validators.email(m) == True) and (validators.domain(veremail[1])):
+            if (validators.email(m) == True) and (validators.domain(veremail[1]) == True):
                 email['email'].append({m})
                 em = input("Desea ingresar otro email? (y/n): ")
                 if em == 'n':
@@ -229,7 +229,7 @@ while(5):
                         print(c + ":")
                     if len(h) >= 1 and separador == 1:
                         contador += 1
-                        print("     " + str(contador) + "." + " " + h)
+                        print("     " + str(contador) + "." + " " + names[contador-1])
             print("")
             print("---------------------------")
             numero = 0
@@ -272,7 +272,7 @@ while(5):
                         print(c + ":")
                     if len(h) >= 1 and separador == 1:
                         contador += 1
-                        print("     " + str(contador) + "." + " " + h)
+                        print("     " + str(contador) + "." + " " + names[contador-1])
             print("")
             print("---------------------------")
             Vercontacto = input("Llamar contacto: ")
@@ -332,7 +332,7 @@ while(5):
                         print(c + ":")
                     if len(h) >= 1 and separador == 1:
                         contador += 1
-                        print("     " + str(contador) + "." + " " + h)
+                        print("     " + str(contador) + "." + " " + names[contador-1])
             print("")
             print("---------------------------")
             Vercontacto = input("Contacto a enviar: ")
@@ -396,7 +396,7 @@ while(5):
                         print(c + ":")
                     if len(h) >= 1 and separador == 1:
                         contador += 1
-                        print("     " + str(contador) + "." + " " + h)
+                        print("     " + str(contador) + "." + " " + names[contador-1])
             print("")
             print("---------------------------")
             Vercontacto = input("Contacto?: ")
