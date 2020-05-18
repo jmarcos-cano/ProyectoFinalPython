@@ -1,0 +1,2 @@
+- utilizaste pandas: a mi no corrio a la primera tu codigo, siempre que un programa en python tenga una dependencia externa se usa requirements.txt como lo vimos en clase
+- usaste win1toast sin embargo victor y yo estamos en macOS, se intenta que siempre sea portable a multiples OS.
